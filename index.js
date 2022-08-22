@@ -58,8 +58,7 @@ module.exports = (api, options) => {
     const isLegacyBundle = process.env.VUE_CLI_MODERN_MODE && !process.env.VUE_CLI_MODERN_BUILD
     // Ignore rewriting names for background and content scripts
     webpackConfig.output.filename((file) =>
-      //`js/[name]${isLegacyBundle ? `-legacy` : ``}${isProduction && options.filenameHashing && !userScripts.includes(file.chunk.name) ? '.[contenthash:8]' : ''}.js`
-      `${file.chunk.name === 'background' ? '' : 'js/'}[name]${isLegacyBundle ? `-legacy` : ``}${isProduction && options.filenameHashing && !userScripts.includes(file.chunk.name) ? '.[contenthash:8]' : ''}.js`
+      `js/[name]${isLegacyBundle ? `-legacy` : ``}${isProduction && options.filenameHashing && !userScripts.includes(file.chunk.name) ? '.[contenthash:8]' : ''}.js`
     )
     webpackConfig.merge({ entry })
 
