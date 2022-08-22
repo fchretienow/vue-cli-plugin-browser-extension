@@ -1,7 +1,7 @@
 const logger = require('@vue/cli-shared-utils')
 const webpack = require('webpack')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const ExtensionReloader = require('webpack-extension-reloader')
+const ExtensionReloader = require('./lib/webpack-extension-reloader')
 const ZipPlugin = require('zip-webpack-plugin')
 const { keyExists } = require('./lib/signing-key')
 const manifestTransformer = require('./lib/manifest')
@@ -58,8 +58,8 @@ module.exports = (api, options) => {
     const isLegacyBundle = process.env.VUE_CLI_MODERN_MODE && !process.env.VUE_CLI_MODERN_BUILD
     // Ignore rewriting names for background and content scripts
     webpackConfig.output.filename((file) =>
-      `js/[name]${isLegacyBundle ? `-legacy` : ``}${isProduction && options.filenameHashing && !userScripts.includes(file.chunk.name) ? '.[contenthash:8]' : ''}.js`
-      // `${file.chunk.name === 'background' ? '' : 'js/'}[name]${isLegacyBundle ? `-legacy` : ``}${isProduction && options.filenameHashing && !userScripts.includes(file.chunk.name) ? '.[contenthash:8]' : ''}.js`
+      //`js/[name]${isLegacyBundle ? `-legacy` : ``}${isProduction && options.filenameHashing && !userScripts.includes(file.chunk.name) ? '.[contenthash:8]' : ''}.js`
+      `${file.chunk.name === 'background' ? '' : 'js/'}[name]${isLegacyBundle ? `-legacy` : ``}${isProduction && options.filenameHashing && !userScripts.includes(file.chunk.name) ? '.[contenthash:8]' : ''}.js`
     )
     webpackConfig.merge({ entry })
 
@@ -85,7 +85,7 @@ module.exports = (api, options) => {
       .test(require.resolve('webextension-polyfill', { paths: [appRootPath] }))
       .use('imports')
       .loader('imports-loader')
-      .options({ browser: '>undefined' })
+      .options({ additionalCode: 'var browser = undefined;' })
 
     if (isProduction) {
       // Silence warnings of known large files, like images, sourcemaps, and the zip artifact
