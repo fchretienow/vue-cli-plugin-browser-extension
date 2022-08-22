@@ -84,7 +84,7 @@ module.exports = (api, options) => {
       .test(require.resolve('webextension-polyfill', { paths: [appRootPath] }))
       .use('imports')
       .loader('imports-loader')
-      .options({ browser: '>undefined' })
+      .options({ additionalCode: 'var browser = undefined;' })
 
     if (isProduction) {
       // Silence warnings of known large files, like images, sourcemaps, and the zip artifact
